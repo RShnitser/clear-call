@@ -1,6 +1,6 @@
 from openai import OpenAI
 from dotenv import load_dotenv
-from flask import Flask, render_template
+from flask import Flask, request, render_template
 
 load_dotenv()
 client = OpenAI()
@@ -16,4 +16,16 @@ def home():
   #   ]
   # )
   # text = response.choices[0].message.content
-  return render_template("index.html", answer="testing")
+  return render_template("index.html")
+
+
+@app.route("/upload", methods = ['POST'])
+def upload():
+  file = request.files['file']
+  if file:
+    content = file.read()
+    if content:
+      return "Success"
+    else:
+      return "Fail"
+  return render_template("index.html")
