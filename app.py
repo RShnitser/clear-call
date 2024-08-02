@@ -1,6 +1,7 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 from flask import Flask, request, render_template
+from io import BytesIO, BufferedReader
 
 load_dotenv()
 client = OpenAI()
@@ -21,11 +22,24 @@ def home():
 
 @app.route("/upload", methods = ['POST'])
 def upload():
-  file = request.files['file']
-  if file:
-    content = file.read()
-    if content:
-      return "Success"
-    else:
-      return "Fail"
-  return render_template("index.html")
+
+  if request.method == 'POST':   
+    file = request.files['file']
+
+    if file:
+      buffer = BytesIO()
+      file.save(buffer)
+      buffer.name = file.filename
+     
+      transcription = client.audio.transcriptions.create(
+        model="whisper-1", 
+        file=buffer
+      )
+      print(transcription.text)
+      # print(data)
+  #   if data:
+  #     return "Success"
+  #   else:
+  #     return "Fail"
+  # return render_template("index.html")
+  return "upload"
