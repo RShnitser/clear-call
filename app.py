@@ -1,7 +1,8 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 from flask import Flask, request, render_template
-from io import BytesIO, BufferedReader
+from io import BytesIO
+
 
 load_dotenv()
 client = OpenAI()
@@ -9,14 +10,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-  # response = client.chat.completions.create(
-  #   model="gpt-3.5-turbo",
-  #   messages=[
-  #     {"role": "system", "content": "This is a test."},
-  #     {"role": "user", "content": "Test"},
-  #   ]
-  # )
-  # text = response.choices[0].message.content
+ 
   return render_template("index.html")
 
 
@@ -31,15 +25,9 @@ def upload():
       file.save(buffer)
       buffer.name = file.filename
      
-      transcription = client.audio.transcriptions.create(
-        model="whisper-1", 
-        file=buffer
-      )
-      print(transcription.text)
-      # print(data)
-  #   if data:
-  #     return "Success"
-  #   else:
-  #     return "Fail"
-  # return render_template("index.html")
-  return "upload"
+      return render_template("message.html", text="success")
+  return render_template("message.html", text="fail")
+
+@app.route("/back")
+def back():
+  return render_template("upload.html")

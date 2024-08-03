@@ -1,0 +1,6 @@
+{% block message %}
+<div hx-target="this" hx-swap="outerHTML">
+  <div>{{text}}</div>
+  <button hx-get="/back">Back</button>
+</div>
+{% endblock %}
