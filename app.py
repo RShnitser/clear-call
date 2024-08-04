@@ -4,11 +4,18 @@ from flask import Flask, request, render_template, send_file
 from io import BytesIO
 from test import doc1
 from src import ai
+import bcrypt
+import os
+from flask_sqlalchemy import SQLAlchemy
 
 
 load_dotenv()
 client = OpenAI()
 app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite+{os.environ.get("DB_URI")}/?authToken={os.environ.get("DB_AUTH")}"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
 
 @app.route("/")
 def home():
@@ -63,4 +70,10 @@ person."""
 
 @app.route("/back")
 def back():
+  return render_template("upload.html")
+
+@app.route("/create_account", methods = ['POST'])
+def create_account():
+  username = request.form["name"]
+  password = request.form["password"]
   return render_template("upload.html")
