@@ -34,14 +34,6 @@ def parse_text(text: str)->str:
   CONSCISE SUMMARY IN BULLET POINTS:"""
 
   prompt = PromptTemplate(template=prompt_template, input_variables=["text"])
-  # response = client.chat.completions.create(
-  #   model="gpt-3.5-turbo",
-  #   messages=[
-  #     {"role": "system", "content": "This is a test."},
-  #     {"role": "user", "content": input},
-  #   ]
-  # )
-  # text = response.choices[0].message.content
   client = ChatOpenAI(temperature=0, model_name=model_name)
   chain = load_summarize_chain(client, chain_type="stuff", prompt=prompt, verbose=True)
   output = chain.invoke(docs)["output_text"]

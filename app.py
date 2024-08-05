@@ -2,7 +2,6 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from flask import Flask, request, render_template, send_file
 from io import BytesIO
-from test import doc1
 from src import ai
 from flask_bcrypt import Bcrypt
 import os
@@ -36,28 +35,43 @@ def home():
  
   return render_template("index.html")
 
+@app.route("/swap_create")
+def swap_account():
+  return render_template("create_user.html")
+
+@app.route("/swap_login")
+def swap_login():
+  return render_template("login.html")
+
 
 @app.route("/upload/<user_id>", methods = ['POST'])
 def upload(user_id):
   int_user_id = int(user_id)
   if request.method == 'POST':   
-    # file = request.files['file']
+    file = request.files['file']
 
-    # if file:
-      # buffer = BytesIO()
-      # file.save(buffer)
-      # buffer.name = file.filename
-    text = request.form.get('text') 
-    result = ai.answer_question("How much is the client willing to pay?", text)
-    print(result)
-    # result = ai.parse_text(text)
-    # document = Document(user_id=1, transcript=text.encode("utf-8"), summary=result.encode("utf-8"))
-    # db.session.add(document)
-    # db.session.commit()
+    if file:
+      buffer = BytesIO()
+      file.save(buffer)
+      buffer.name = file.filename
+      transcript = ai.transcribe_audio(client, buffer)
+      summary = ai.parse_text(transcript)
+      document = Document(user_id=1, transcript=transcript.encode("utf-8"), summary=summary.encode("utf-8"))
+      db.session.add(document)
+      db.session.commit()
 
 
-    return render_template("message.html",transcript_link=f"download_transcript/{int_user_id}", summary_link=f"download_summary/{int_user_id}", text="")
-  return render_template("message.html", text=doc1.d1)
+    return render_template("message.html",transcript_link=f"download_transcript/{int_user_id}", summary_link=f"download_summary/{int_user_id}", chat_id=f"chat/{int_user_id}", text=transcript)
+  return render_template("upload.html", upload_link=f"upload/{int_user_id}")
+
+@app.route("/chat/<id>", methods = ['POST'] )
+def chat(id):
+  question = request.form.get('chat')
+  int_id = int(id)
+  document = Document.query.filter(Document.id == int_id).first()
+  answer = ai.answer_question(question, document.transcript.decode("utf-8"))
+  return render_template("chat_response.html", question=question, answer=answer)
+
 
 @app.route("/download_transcript/<id>")
 def download_transcript(id):
@@ -86,7 +100,8 @@ def create_account():
     user = User(name=username, password=hash)
     db.session.add(user)
     db.session.commit()
-  return render_template("upload.html")
+    return render_template("upload.html", upload_link=f"upload/{user.id}")
+  return render_template("create_user.html")
 
 @app.route("/login", methods = ['POST'])
 def login():
@@ -96,6 +111,4 @@ def login():
   if user:
     if bcrypt.check_password_hash(user.password, password):
       return render_template("upload.html", upload_link=f"upload/{user.id}")
-    else:
-      print("Fail")
   return render_template("login.html")
