@@ -1,5 +1,10 @@
 # Clear Call
 
+Clear Call is a web application that uses
+OpenAI and langchain to transcribe audio,
+summarize the transcript, and answer 
+questions about the transcript.
+
 ## Running
 
 Requires python and pip
