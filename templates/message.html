@@ -1,6 +1,9 @@
 {% block message %}
 <div hx-target="this" hx-swap="outerHTML">
   <div>{{text}}</div>
+  <hr />
+  <div>{{summary}}</div>
+  <hr />
   <a href="{{transcript_link}}">Download Transcript</a>
   <a href="{{summary_link}}">Download Summary</a>
   {%include "chat_window.html" %}

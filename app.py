@@ -61,7 +61,11 @@ def upload(user_id):
       db.session.commit()
 
 
-    return render_template("message.html",transcript_link=f"download_transcript/{int_user_id}", summary_link=f"download_summary/{int_user_id}", chat_id=f"chat/{int_user_id}", text=transcript)
+    return render_template("message.html",
+                           transcript_link=f"download_transcript/{int_user_id}", 
+                           summary_link=f"download_summary/{int_user_id}", 
+                           chat_id=f"chat/{int_user_id}", 
+                           text=transcript, summary=summary)
   return render_template("upload.html", upload_link=f"upload/{int_user_id}")
 
 @app.route("/chat/<id>", methods = ['POST'] )
