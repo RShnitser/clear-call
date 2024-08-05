@@ -9,7 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 load_dotenv()
-client = OpenAI()
+client = OpenAI(os.environ.get("OPENAI_API_KEY"))
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite+{os.environ.get("DB_URI")}/?authToken={os.environ.get("DB_AUTH")}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
