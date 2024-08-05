@@ -1,6 +1,7 @@
-#Clear Call#
+# Clear Call
 
-##Running##
+## Running
+
 Requires python and pip
 
 run  
@@ -13,23 +14,23 @@ flask run
 ```
 to start app
 
-##login and create account##
+## Login and Create Account
 
 Create or login with username and password
 
-##upload screen##
+## Upload Screen
 
 Upload an audio file in the mp3, mp4, mpeg, mpga, m4a, wav, or webm. format.
 
-##message screen##
+## Message Screen
 Will display transcript of audio file
 Has download link to transcript and summary
 input question and chat assistant will answer questions about the transcript
 
-##To Do##
-Styling
-Better Descriptions on app pages
-Set limitations on types of files that can be uploaded
-Protected Routes
-Download page for all of user's transcripts and summaries
+## To Do
+- Styling
+- Better Descriptions on app pages
+- Set limitations on types of files that can be uploaded
+- Protected Routes
+- Download page for all of user's transcripts and summaries
 
