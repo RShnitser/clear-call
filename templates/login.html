@@ -1,11 +1,6 @@
-<div>
+<div hx-target="this" hx-swap="outerHTML">
   <h2>Login</h2>
-  <form
-    hx-post="/login"
-    hx-encoding="multipart/form-data"
-    hx-target="this"
-    hx-swap="outerHTML"
-  >
+  <form hx-post="/login">
     <input type="text" name="name" />
     <input type="password" name="password" />
     <button type="submit">Login</button>

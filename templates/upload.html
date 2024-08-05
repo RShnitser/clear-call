@@ -1,10 +1,11 @@
 <form
   id="form"
-  hx-post="/upload"
+  hx-post="{{upload_link}}"
   hx-encoding="multipart/form-data"
   hx-target="this"
   hx-swap="outerHTML"
 >
-  <input type="file" name="file" />
+  <!-- <input type="file" name="file" /> -->
+  <textarea name="text"></textarea>
   <button>Upload</button>
 </form>
