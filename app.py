@@ -6,7 +6,9 @@ from src import ai
 from flask_bcrypt import Bcrypt
 import os
 from flask_sqlalchemy import SQLAlchemy
-
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import String, ForeignKey, LargeBinary
+from sqlalchemy.orm import Mapped, mapped_column
 
 load_dotenv()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
@@ -14,21 +16,40 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite+{os.environ.get("DB_URI")}/?authToken={os.environ.get("DB_AUTH")}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(50), nullable=False)
-    documents = db.relationship('Document', backref='user', lazy=True)
+class Base(DeclarativeBase):
+  pass
 
+db = SQLAlchemy(model_class=Base)
+db.init_app(app)
+
+class User(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(50))
 
 class Document(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    transcript = db.Column(db.LargeBinary)
-    summary = db.Column(db.LargeBinary)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    transcript: Mapped[LargeBinary] = mapped_column(LargeBinary())
+    summary: Mapped[LargeBinary] = mapped_column(LargeBinary())
+
+# class User(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(50), unique=True, nullable=False)
+#     password = db.Column(db.String(50), nullable=False)
+#     documents = db.relationship('Document', backref='user', lazy=True)
+
+
+# class Document(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+#     transcript = db.Column(db.LargeBinary)
+#     summary = db.Column(db.LargeBinary)
+
+# with app.app_context():
+#     db.create_all()
 
 @app.route("/")
 def home():
@@ -68,26 +89,29 @@ def upload(user_id):
                            text=transcript, summary=summary)
   return render_template("upload.html", upload_link=f"upload/{int_user_id}")
 
-@app.route("/chat/<id>", methods = ['POST'] )
+@app.route("/chat/<int:id>", methods = ['POST'] )
 def chat(id):
   question = request.form.get('chat')
-  int_id = int(id)
-  document = Document.query.filter(Document.id == int_id).first()
+  # int_id = int(id)
+  # document = Document.query.filter(Document.id == id).first()
+  document = db.get_or_404(Document, id)
   answer = ai.answer_question(question, document.transcript.decode("utf-8"))
   return render_template("chat_response.html", question=question, answer=answer)
 
 
-@app.route("/download_transcript/<id>")
+@app.route("/download_transcript/<int:id>")
 def download_transcript(id):
-  int_id = int(id)
-  document = Document.query.filter(Document.id == int_id).first()
+  # int_id = int(id)
+  document = db.get_or_404(Document, id)
+  # document = Document.query.filter(Document.id == int_id).first()
   content = BytesIO(document.transcript)
   return send_file(content, download_name="transcript.txt", mimetype="text/plain", as_attachment=True)
 
-@app.route("/download_summary/<id>")
+@app.route("/download_summary/<int:id>")
 def download_summary(id):
-  int_id = int(id)
-  document = Document.query.filter(Document.id == int_id).first()
+  # int_id = int(id)
+  # document = Document.query.filter(Document.id == int_id).first()
+  document = db.get_or_404(Document, id)
   content = BytesIO(document.summary)
   return send_file(content, download_name="summary.txt", mimetype="text/plain", as_attachment=True)
 
@@ -109,9 +133,10 @@ def create_account():
 
 @app.route("/login", methods = ['POST'])
 def login():
-  username = request.form["name"]
+  name = request.form["name"]
   password = request.form["password"]
-  user = User.query.filter(User.name == username).first()
+  # user = User.query.filter(User.name == username).first()
+  user = db.one_or_404(db.select(User).filter_by(name=name))
   if user:
     if bcrypt.check_password_hash(user.password, password):
       return render_template("upload.html", upload_link=f"upload/{user.id}")
