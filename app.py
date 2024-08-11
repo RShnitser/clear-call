@@ -64,10 +64,23 @@ def swap_account():
 def swap_login():
   return render_template("login.html")
 
+@app.route("/swap_upload/<int:user_id>")
+def swap_upload(user_id):
+  return render_template("upload.html", upload_link=f"upload/{user_id}")
 
-@app.route("/upload/<user_id>", methods = ['POST'])
+@app.route("/swap_download/<int:user_id>")
+def swap_download(user_id):
+  # docs = db.get_or_404(db.select(Document).filter_by(user_id=user_id))
+  docs = db.session.execute(db.select(Document.id).where(Document.user_id == user_id)).all()
+  links = []
+  for doc in docs:
+    links.append((f"/download_transcript/{doc.id}", f"/download_summary/{doc.id}"))
+  return render_template("download.html", links=links)
+
+
+@app.route("/upload/<int:user_id>", methods = ['POST'])
 def upload(user_id):
-  int_user_id = int(user_id)
+  # int_user_id = int(user_id)
   if request.method == 'POST':   
     file = request.files['file']
 
@@ -83,11 +96,11 @@ def upload(user_id):
 
 
     return render_template("message.html",
-                           transcript_link=f"download_transcript/{int_user_id}", 
-                           summary_link=f"download_summary/{int_user_id}", 
-                           chat_id=f"chat/{int_user_id}", 
+                           transcript_link=f"download_transcript/{user_id}", 
+                           summary_link=f"download_summary/{user_id}", 
+                           chat_id=f"chat/{user_id}", 
                            text=transcript, summary=summary)
-  return render_template("upload.html", upload_link=f"upload/{int_user_id}")
+  return render_template("upload.html", upload_link=f"upload/{user_id}")
 
 @app.route("/chat/<int:id>", methods = ['POST'] )
 def chat(id):
@@ -139,5 +152,6 @@ def login():
   user = db.one_or_404(db.select(User).filter_by(name=name))
   if user:
     if bcrypt.check_password_hash(user.password, password):
-      return render_template("upload.html", upload_link=f"upload/{user.id}")
+      # return render_template("upload.html", upload_link=f"upload/{user.id}")
+      return render_template("app.html", upload_link=f"upload/{user.id}", up_swap=f"swap_upload/{user.id}",  down_swap=f"swap_download/{user.id}")
   return render_template("login.html")

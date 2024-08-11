@@ -1,0 +1,17 @@
+{% block app %}
+<div>
+  <ul>
+    <li>
+      <div hx-get="{{up_swap}}" hx-target="#app-main" hx-swap="innerHTML">
+        Upload
+      </div>
+    </li>
+    <li>
+      <div hx-get="{{down_swap}}" hx-target="#app-main" hx-swap="innerHTML">
+        Download
+      </div>
+    </li>
+  </ul>
+  <div id="app-main">{%include "upload.html" %}</div>
+</div>
+{% endblock %}
