@@ -1,9 +1,21 @@
 {% block app %}
 <div>
   <ul>
+    {%for link in links%}
     <li>
+      <div hx-get="{{link[0]}}" hx-target="#app-main" hx-swap="innerHTML">
+        {{link[1]}}
+      </div>
+    </li>
+    {%endfor%}
+    <!-- <li>
       <div hx-get="{{up_swap}}" hx-target="#app-main" hx-swap="innerHTML">
         Upload
+      </div>
+    </li>
+    <li>
+      <div hx-get="{{up_swap_t}}" hx-target="#app-main" hx-swap="innerHTML">
+        Upload Transcript
       </div>
     </li>
     <li>
@@ -11,7 +23,7 @@
         Download
       </div>
     </li>
-  </ul>
+  </ul> -->
   <div id="app-main">{%include "upload.html" %}</div>
 </div>
 {% endblock %}

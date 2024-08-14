@@ -1,0 +1,20 @@
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Sentiment</th>
+    <th>Contact Info</th>
+    <th>Budget Range</th>
+    <th>Location of Interest</th>
+    <th>House Features of Interest</th>
+  </tr>
+  {%for client in clients%}
+  <tr>
+    <td>{{client.name}}</td>
+    <td>{{client.sentiment}}</td>
+    <td>{{client.contact_info}}</td>
+    <td>{{client.budget_range}}</td>
+    <td>{{client.location}}</td>
+    <td>{{client.house_info}}</td>
+  </tr>
+  {%endfor%}
+</table>
