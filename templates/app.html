@@ -1,4 +1,5 @@
 {% block app %}
+<h1>Clear Call</h1>
 <div>
   <ul>
     {%for link in links%}
@@ -8,22 +9,6 @@
       </div>
     </li>
     {%endfor%}
-    <!-- <li>
-      <div hx-get="{{up_swap}}" hx-target="#app-main" hx-swap="innerHTML">
-        Upload
-      </div>
-    </li>
-    <li>
-      <div hx-get="{{up_swap_t}}" hx-target="#app-main" hx-swap="innerHTML">
-        Upload Transcript
-      </div>
-    </li>
-    <li>
-      <div hx-get="{{down_swap}}" hx-target="#app-main" hx-swap="innerHTML">
-        Download
-      </div>
-    </li>
-  </ul> -->
   <div id="app-main">{%include "upload.html" %}</div>
 </div>
 {% endblock %}

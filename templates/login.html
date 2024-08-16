@@ -1,9 +1,17 @@
-<div hx-target="this" hx-swap="outerHTML">
-  <h2>Login</h2>
-  <a hx-get="/swap_create">Don't Have an account? Create Account</a>
-  <form hx-post="/login">
-    <input type="text" name="name" />
-    <input type="password" name="password" />
+<div
+  class="w-80 mx-auto border-solid border-2 rounded m-5 p-2.5"
+  hx-target="this"
+  hx-swap="outerHTML"
+>
+  <h2 class="text-center">Login</h2>
+  <form class="flex flex-col justify center" hx-post="/login">
+    <label for="username">Username</label>
+    <input id="username" type="text" name="name" required />
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" required />
     <button type="submit">Login</button>
   </form>
+  <div class="text-center cursor-pointer">
+    <a hx-get="/swap_create">Don't Have an account? Create Account</a>
+  </div>
 </div>
