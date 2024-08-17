@@ -28,7 +28,7 @@ def transcribe_audio(client, buffer: BytesIO)->str:
   # print(result)
  
   # return result
-  return segment_list, test.transcript.text, ""
+  return segment_list, test.transcript.text, test.transcript.summary
 
 def create_summary(text: str)->str:
   model_name = "gpt-3.5-turbo"
