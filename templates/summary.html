@@ -1,0 +1,15 @@
+{% block message %}
+<div hx-target="this" hx-swap="outerHTML">
+  <h2>Transcript and Summary</h2>
+  <div>
+    <div>
+      <a href="{{transcript_link}}">Download Transcript</a>
+      <a href="{{summary_link}}">Download Summary</a>
+    </div>
+    <!-- {%include "chat_window.html" %} -->
+    <button hx-get="/back">Back</button>
+  </div>
+  <pre>{{text}}</pre>
+  <pre>{{summary}}</pre>
+</div>
+{% endblock %}

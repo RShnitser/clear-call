@@ -61,6 +61,28 @@ class Client(db.Model):
 # with app.app_context():
 #     db.create_all()
 
+def create_client(client_data, user_id):
+  client = Client(
+    user_id=user_id,
+    name=client_data.name, 
+    sentiment=client_data.sentiment,
+    contact_info=client_data.contact_info,
+    budget_range=client_data.budget_range,
+    location=client_data.location,
+    house_info=client_data.house_info)
+  
+  db.session.add(client)
+  db.session.commit()
+
+def create_links(user_id):
+   links = [
+        (f"swap_upload/{user_id}", "Upload"),
+        (f"swap_upload_transcript/{user_id}", "Upload Transcript"),
+        (f"swap_download/{user_id}", "Download"),
+        (f"swap_client/{user_id}", "Client Data"),
+    ]
+   return links
+
 @app.route("/")
 def home():
  
@@ -105,54 +127,64 @@ def swap_client(user_id):
 @app.route("/upload/<int:user_id>", methods = ['POST'])
 def upload(user_id):
   # int_user_id = int(user_id)
-  if request.method == 'POST':   
-    file = request.files['file']
+  segments, text, summary = ai.transcribe_audio(client, None)
+  transcript = "\n\n".join(segments)
+  # if request.method == 'POST':   
+  #   file = request.files['file']
 
-    if file:
-      buffer = BytesIO()
-      file.save(buffer)
-      buffer.name = file.filename
-      transcript = ai.transcribe_audio(client, buffer)
-      summary = ai.parse_text(transcript)
-      document = Document(user_id=user_id, transcript=transcript.encode("utf-8"), summary=summary.encode("utf-8"))
-      db.session.add(document)
-      db.session.commit()
+  #   if file:
+  #     buffer = BytesIO()
+  #     file.save(buffer)
+  #     buffer.name = file.filename
+  #     transcript = ai.transcribe_audio(client, buffer)
+      # summary = ai.create_summary(transcript)
+      # document = Document(user_id=user_id, transcript=transcript.encode("utf-8"), summary=summary.encode("utf-8"))
+      # db.session.add(document)
+      # db.session.commit()
+
+      # client_data = ai.parse_transcript(transcript)
+      # create_client(client_data, user_id)
 
 
-    return render_template("message.html",
-                           transcript_link=f"download_transcript/{user_id}", 
-                           summary_link=f"download_summary/{user_id}", 
-                           chat_id=f"chat/{user_id}", 
-                           text=transcript, summary=summary)
-  return render_template("upload.html", upload_link=f"upload/{user_id}")
+      # return render_template("summary.html",
+      #                      transcript_link=f"download_transcript/{user_id}", 
+      #                      summary_link=f"download_summary/{user_id}", 
+      #                      chat_id=f"chat/{user_id}", 
+      #                      text=transcript, summary=summary)
+  return render_template("summary.html",
+                          transcript_link=f"download_transcript/{user_id}", 
+                          summary_link=f"download_summary/{user_id}",
+                          text=transcript, summary=summary)
+  # return render_template("upload.html", upload_link=f"upload/{user_id}")
 
 @app.route("/upload_transcript/<int:user_id>", methods = ['POST'])
 def upload_transcript(user_id):
    if request.method == 'POST': 
       text = request.form.get('text')
       client_data = ai.parse_transcript(text)
-      client = Client(
-                      user_id=user_id,
-                      name=client_data.name, 
-                      sentiment=client_data.sentiment,
-                      contact_info=client_data.contact_info,
-                      budget_range=client_data.budget_range,
-                      location=client_data.location,
-                      house_info=client_data.house_info
-                       )
-      db.session.add(client)
-      db.session.commit()
+      create_client(client_data, user_id)
+      # client = Client(
+      #                 user_id=user_id,
+      #                 name=client_data.name, 
+      #                 sentiment=client_data.sentiment,
+      #                 contact_info=client_data.contact_info,
+      #                 budget_range=client_data.budget_range,
+      #                 location=client_data.location,
+      #                 house_info=client_data.house_info
+      #                  )
+      # db.session.add(client)
+      # db.session.commit()
        
    return render_template("upload_transcript.html", upload_link=f"upload_transcript/{user_id}")
 
-@app.route("/chat/<int:id>", methods = ['POST'] )
-def chat(id):
-  question = request.form.get('chat')
-  # int_id = int(id)
-  # document = Document.query.filter(Document.id == id).first()
-  document = db.get_or_404(Document, id)
-  answer = ai.answer_question(question, document.transcript.decode("utf-8"))
-  return render_template("chat_response.html", question=question, answer=answer)
+# @app.route("/chat/<int:id>", methods = ['POST'] )
+# def chat(id):
+#   question = request.form.get('chat')
+#   # int_id = int(id)
+#   # document = Document.query.filter(Document.id == id).first()
+#   document = db.get_or_404(Document, id)
+#   answer = ai.answer_question(question, document.transcript.decode("utf-8"))
+#   return render_template("chat_response.html", question=question, answer=answer)
 
 
 @app.route("/download_transcript/<int:id>")
@@ -184,13 +216,14 @@ def create_account():
     user = User(name=username, password=hash)
     db.session.add(user)
     db.session.commit()
-    links = [
-        (f"swap_upload/{user.id}", "Upload"),
-        (f"swap_upload_transcript/{user.id}", "Upload Transcript"),
-        (f"swap_download/{user.id}", "Download"),
-        (f"swap_client/{user.id}", "Client Data"),
-      ]
-    return render_template("app.html", upload_link=f"upload/{user.id}", links=links)
+    links = create_links(user.id)
+    # links = [
+    #     (f"swap_upload/{user.id}", "Upload"),
+    #     (f"swap_upload_transcript/{user.id}", "Upload Transcript"),
+    #     (f"swap_download/{user.id}", "Download"),
+    #     (f"swap_client/{user.id}", "Client Data"),
+    #   ]
+    return render_template("nav.html", upload_link=f"upload/{user.id}", links=links)
   return render_template("create_user.html")
 
 @app.route("/login", methods = ['POST'])
@@ -202,11 +235,16 @@ def login():
   if user:
     if bcrypt.check_password_hash(user.password, password):
       # return render_template("upload.html", upload_link=f"upload/{user.id}")
-      links = [
-        (f"swap_upload/{user.id}", "Upload"),
-        (f"swap_upload_transcript/{user.id}", "Upload Transcript"),
-        (f"swap_download/{user.id}", "Download"),
-        (f"swap_client/{user.id}", "Client Data"),
-      ]
-      return render_template("app.html", upload_link=f"upload/{user.id}", links=links)
+      links = create_links(user.id)
+      # links = [
+      #   (f"swap_upload/{user.id}", "Upload"),
+      #   (f"swap_upload_transcript/{user.id}", "Upload Transcript"),
+      #   (f"swap_download/{user.id}", "Download"),
+      #   (f"swap_client/{user.id}", "Client Data"),
+      # ]
+      return render_template("nav.html", upload_link=f"upload/{user.id}", links=links)
+  return render_template("login.html")
+
+@app.route("/logout")
+def logout():
   return render_template("login.html")

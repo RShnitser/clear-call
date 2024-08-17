@@ -1,4 +1,5 @@
 <form
+  class="flex justify-between max-w-screen-md mx-auto m-2.5"
   id="form"
   hx-post="{{upload_link}}"
   hx-encoding="multipart/form-data"
@@ -7,5 +8,10 @@
 >
   <input type="file" name="file" />
   <!-- <textarea name="text"></textarea> -->
-  <button>Upload</button>
+  <button
+    class="border-solid border-2 border-black rounded bg-gray-200 p-1.5"
+    type="submit"
+  >
+    Upload
+  </button>
 </form>
