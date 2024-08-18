@@ -1,8 +1,18 @@
-<div>
+<table class="max-w-screen-md mx-auto border border-slate-500">
+  <tr class="text-center">
+    <th class="border border-slate-600 bg-gray-300">Transcript Link</th>
+    <th class="border border-slate-600 bg-gray-300">Summary Link</th>
+  </tr>
   {%for link in links%}
-  <div>
-    <a href="{{link[0]}}">Download Transcript</a>
-    <a href="{{link[1]}}">Download Summary</a>
-  </div>
+  <tr>
+    <td class="border border-slate-700 p-1.5">
+      <a class="text-blue-600 underline" href="{{link[0]}}"
+        >Download Transcript</a
+      >
+    </td>
+    <td class="border border-slate-700 p-1.5">
+      <a class="text-blue-600 underline" href="{{link[1]}}">Download Summary</a>
+    </td>
+  </tr>
   {%endfor%}
-</div>
+</table>

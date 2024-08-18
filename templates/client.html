@@ -1,20 +1,22 @@
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Sentiment</th>
-    <th>Contact Info</th>
-    <th>Budget Range</th>
-    <th>Location of Interest</th>
-    <th>House Features of Interest</th>
+<table class="max-w-screen-md mx-auto border border-slate-500">
+  <tr class="text-center">
+    <th class="border border-slate-600 bg-gray-300">Name</th>
+    <th class="border border-slate-600 bg-gray-300">Sentiment</th>
+    <th class="border border-slate-600 bg-gray-300">Contact Info</th>
+    <th class="border border-slate-600 bg-gray-300">Budget Range</th>
+    <th class="border border-slate-600 bg-gray-300">Location of Interest</th>
+    <th class="border border-slate-600 bg-gray-300">
+      House Features of Interest
+    </th>
   </tr>
   {%for client in clients%}
   <tr>
-    <td>{{client.name}}</td>
-    <td>{{client.sentiment}}</td>
-    <td>{{client.contact_info}}</td>
-    <td>{{client.budget_range}}</td>
-    <td>{{client.location}}</td>
-    <td>{{client.house_info}}</td>
+    <td class="border border-slate-700">{{client.name}}</td>
+    <td class="border border-slate-600">{{client.sentiment}}</td>
+    <td class="border border-slate-600">{{client.contact_info}}</td>
+    <td class="border border-slate-600">{{client.budget_range}}</td>
+    <td class="border border-slate-600">{{client.location}}</td>
+    <td class="border border-slate-600">{{client.house_info}}</td>
   </tr>
   {%endfor%}
 </table>

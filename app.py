@@ -154,7 +154,8 @@ def upload(user_id):
   return render_template("summary.html",
                           transcript_link=f"download_transcript/{user_id}", 
                           summary_link=f"download_summary/{user_id}",
-                          text=transcript, summary=summary)
+                          back_link=f"back/{user_id}",
+                          segments=segments, summary=summary)
   # return render_template("upload.html", upload_link=f"upload/{user_id}")
 
 @app.route("/upload_transcript/<int:user_id>", methods = ['POST'])
@@ -203,9 +204,9 @@ def download_summary(id):
   content = BytesIO(document.summary)
   return send_file(content, download_name="summary.txt", mimetype="text/plain", as_attachment=True)
 
-@app.route("/back")
-def back():
-  return render_template("upload.html")
+@app.route("/back/<int:id>")
+def back(id):
+  return render_template("upload.html", upload_link=f"upload/{id}" )
 
 @app.route("/create_account", methods = ['POST'])
 def create_account():
