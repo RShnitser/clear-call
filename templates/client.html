@@ -1,5 +1,6 @@
 <table class="max-w-screen-md mx-auto border border-slate-500">
   <tr class="text-center">
+    <th class="border border-slate-600 bg-gray-300">Date Created</th>
     <th class="border border-slate-600 bg-gray-300">Name</th>
     <th class="border border-slate-600 bg-gray-300">Sentiment</th>
     <th class="border border-slate-600 bg-gray-300">Contact Info</th>
@@ -11,6 +12,7 @@
   </tr>
   {%for client in clients%}
   <tr>
+    <td class="border border-slate-700">{{client.date}}</td>
     <td class="border border-slate-700">{{client.name}}</td>
     <td class="border border-slate-600">{{client.sentiment}}</td>
     <td class="border border-slate-600">{{client.contact_info}}</td>

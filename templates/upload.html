@@ -6,8 +6,16 @@
   hx-target="this"
   hx-swap="outerHTML"
 >
-  <input type="file" name="file" />
-  <!-- <textarea name="text"></textarea> -->
+  <label class="font-bold" for="label">Label</label>
+  <input
+    class="border-solid border-2"
+    id="label"
+    type="text"
+    name="name"
+    required
+  />
+  <label class="font-bold" for="upload">Audio File</label>
+  <input id="upload" type="file" name="file" required />
   <button
     class="border-solid border-2 border-black rounded bg-gray-200 p-1.5"
     type="submit"

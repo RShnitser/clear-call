@@ -26,16 +26,18 @@ Create or login with username and password
 ## Upload Screen
 
 Upload an audio file in the mp3, mp4, mpeg, mpga, m4a, wav, or webm. format.
+After a file is uploaded, the transcript and summary wil be displayed.
 
-## Message Screen
-Will display transcript of audio file
-Has download link to transcript and summary
-input question and chat assistant will answer questions about the transcript
+## Download Screen
+
+Download links to transcripts and summaries from all previously uploaded audio files.
+
+## Client Data Screen
+
+Shows information about the client that could potentially aid in making a sale
 
 ## To Do
-- Styling
-- Better Descriptions on app pages
 - Set limitations on types of files that can be uploaded
 - Protected Routes
-- Download page for all of user's transcripts and summaries
+- Progress bars
 

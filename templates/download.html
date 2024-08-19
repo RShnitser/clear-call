@@ -1,17 +1,21 @@
 <table class="max-w-screen-md mx-auto border border-slate-500">
   <tr class="text-center">
+    <th class="border border-slate-600 bg-gray-300">Date Created</th>
+    <th class="border border-slate-600 bg-gray-300">Label</th>
     <th class="border border-slate-600 bg-gray-300">Transcript Link</th>
     <th class="border border-slate-600 bg-gray-300">Summary Link</th>
   </tr>
   {%for link in links%}
   <tr>
+    <td class="border border-slate-700 p-1.5">{{link[0]}}</td>
+    <td class="border border-slate-700 p-1.5">{{link[1]}}</td>
     <td class="border border-slate-700 p-1.5">
-      <a class="text-blue-600 underline" href="{{link[0]}}"
+      <a class="text-blue-600 underline" href="{{link[2]}}"
         >Download Transcript</a
       >
     </td>
     <td class="border border-slate-700 p-1.5">
-      <a class="text-blue-600 underline" href="{{link[1]}}">Download Summary</a>
+      <a class="text-blue-600 underline" href="{{link[3]}}">Download Summary</a>
     </td>
   </tr>
   {%endfor%}
